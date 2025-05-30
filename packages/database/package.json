@@ -1,0 +1,30 @@
+{
+  "name": "@wordweave/database",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "db:generate": "dotenv -e ../../.env.development -- prisma generate",
+    "db:push": "dotenv -e ../../.env.development -- prisma db push",
+    "db:studio": "dotenv -e ../../.env.development -- prisma studio",
+    "db:reset": "dotenv -e ../../.env.development -- prisma db push --force-reset",
+    "db:migrate:dev": "dotenv -e ../../.env.development -- prisma migrate dev",
+    "db:migrate:deploy": "dotenv -e ../../.env.development -- prisma migrate deploy",
+    "db:migrate:reset": "dotenv -e ../../.env.development -- prisma migrate reset",
+    "db:validate": "dotenv -e ../../.env.development -- prisma validate",
+    "db:format": "dotenv -e ../../.env.development -- prisma format"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "dotenv-cli": "^7.3.0",
+    "prisma": "^5.8.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

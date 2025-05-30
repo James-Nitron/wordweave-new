@@ -1,33 +1,109 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Wordweave
 
-## Getting Started
+Learning languages as you browse the web. A Chrome extension that helps you learn new languages while surfing the internet.
 
-First, run the development server:
+## Project Structure
 
+```
+wordweave/
+├── apps/
+│   ├── api/         # Express API server
+│   └── extension/   # Chrome extension
+└── packages/
+    └── database/    # Shared Prisma/DB package
+```
+
+## Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (v8 or higher)
+- Docker (for PostgreSQL database)
+- Chrome browser
+
+## Setup
+
+1. Install dependencies:
+```bash
+pnpm install
+```
+
+2. Set up environment variables:
+Create a `.env.development` file in the root directory:
+```env
+# Database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/wordweave"
+
+# API
+PORT=3000
+
+# Clerk (for the extension)
+CLERK_PUBLISHABLE_KEY="your_publishable_key"
+CLERK_SECRET_KEY="your_secret_key"
+
+# Extension
+NODE_ENV="development"
+API_URL="http://localhost:3000"
+```
+
+3. Start the development database:
+```bash
+docker-compose up -d
+```
+
+4. Generate Prisma client and push schema:
+```bash
+pnpm db:generate
+pnpm db:push
+```
+
+## Development
+
+Start all applications in development mode:
 ```bash
 pnpm dev
-# or
-npm run dev
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+This will start:
+- Express API on http://localhost:3000
+- Chrome extension in development mode (load unpacked)
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+### Loading the Extension
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+1. Open Chrome and navigate to `chrome://extensions`
+2. Enable "Developer mode" in the top right
+3. Click "Load unpacked" and select the `apps/extension/build` directory
 
-## Making production build
+## Available Scripts
 
-Run the following:
+- `pnpm dev` - Start all applications in development mode
+- `pnpm build` - Build all applications
+- `pnpm lint` - Lint all applications
+- `pnpm db:generate` - Generate Prisma client
+- `pnpm db:push` - Push database schema changes
 
-```bash
-pnpm build
-# or
-npm run build
-```
+## Tech Stack
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+- **API Server**
+  - Express.js
+  - TypeScript
+  - Prisma ORM
 
-## Submit to the webstores
+- **Chrome Extension**
+  - Plasmo Framework
+  - React
+  - Clerk Authentication
+  - TypeScript
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+- **Database**
+  - PostgreSQL
+  - Prisma
+
+## Contributing
+
+1. Create a feature branch from `main`
+2. Make your changes
+3. Submit a pull request
+
+## License
+
+[MIT License](LICENSE) 
