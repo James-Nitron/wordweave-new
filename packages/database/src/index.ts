@@ -1,13 +1,7 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
-declare global {
-  var prisma: PrismaClient | undefined
-}
+// Export our custom types
+export type { User, DailyWord, History, Plan } from "./types";
 
-export const prisma = global.prisma || new PrismaClient()
-
-if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma
-}
-
-export * from '@prisma/client' 
+// Export Prisma client instance
+export const prisma = new PrismaClient();
