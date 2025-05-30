@@ -17,10 +17,6 @@ const Home = () => {
   )
   const dailyWord = user?.dailyWord
 
-  console.log(dailyWord)
-
-  console.log("user", user)
-
   useEffect(() => {
     setSelectedLanguage(
       languages.find((language) => language.code === user?.selectedLanguage)

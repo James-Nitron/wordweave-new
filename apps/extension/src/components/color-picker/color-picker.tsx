@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { BlockPicker } from "react-color"
+import { ChromePicker } from "react-color"
 
 interface ColorPickerProps {
   defaultColor?: string
@@ -8,43 +8,33 @@ interface ColorPickerProps {
   id?: string
 }
 
-export function ColorPicker({
-  defaultColor = "#3B82F6", // Default to blue-600
+const ColorPicker = ({
+  defaultColor = "rgba(59, 130, 246, 1)",
   onChange,
+  className,
   id
-}: ColorPickerProps) {
+}: ColorPickerProps) => {
   const [color, setColor] = useState(defaultColor)
 
   const handleColorChange = (newColor: any) => {
-    const hexColor = newColor.hex
-    setColor(hexColor)
-    onChange?.(hexColor)
+    const { r, g, b, a } = newColor.rgb
+    const rgbaColor = `rgba(${r}, ${g}, ${b}, ${a})`
+    setColor(rgbaColor)
+    onChange?.(rgbaColor)
   }
 
   return (
-    <div id={id}>
-      <BlockPicker
+    <div className={className} id={id}>
+      <ChromePicker
         color={color}
         onChange={handleColorChange}
-        width="100%"
-        colors={[
-          "#3B82F6", // blue-600
-          "#EF4444", // red-500
-          "#10B981", // emerald-500
-          "#F59E0B", // amber-500
-          "#8B5CF6", // violet-500
-          "#EC4899", // pink-500
-          "#6B7280", // gray-500
-          "#000000" // black
-        ]}
-        triangle="hide"
         styles={{
           default: {
-            card: {
+            picker: {
               boxShadow: "none",
               border: "none",
-              borderRadius: "0",
-              background: "transparent"
+              width: "100%",
+              borderRadius: "0"
             }
           }
         }}
@@ -52,3 +42,5 @@ export function ColorPicker({
     </div>
   )
 }
+
+export default ColorPicker

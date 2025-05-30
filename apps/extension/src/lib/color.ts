@@ -3,20 +3,12 @@ interface ColorStyle {
   text: string
 }
 
-function hexToRgb(hex: string) {
-  // Remove the hash if present
-  hex = hex.replace(/^#/, "")
+function getContrastTextColor(color: string): string {
+  // Extract RGB values from the RGBA string
+  const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+  if (!match) return "#FFFFFF"
 
-  // Parse the hex values
-  const r = parseInt(hex.slice(0, 2), 16)
-  const g = parseInt(hex.slice(2, 4), 16)
-  const b = parseInt(hex.slice(4, 6), 16)
-
-  return { r, g, b }
-}
-
-function getContrastTextColor(backgroundColor: string): string {
-  const { r, g, b } = hexToRgb(backgroundColor)
+  const [, r, g, b] = match.map(Number)
 
   // Calculate relative luminance using WCAG formula
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
@@ -26,15 +18,10 @@ function getContrastTextColor(backgroundColor: string): string {
 }
 
 export function getColorStyle(color: string | undefined): ColorStyle {
-  if (!color) {
-    return {
-      background: "#3B82F6", // Default blue
-      text: "#FFFFFF"
-    }
-  }
+  const defaultColor = "rgba(59, 130, 246, 1)" // Default blue
 
   return {
-    background: color,
-    text: getContrastTextColor(color)
+    background: color ?? defaultColor,
+    text: getContrastTextColor(color ?? defaultColor)
   }
 }

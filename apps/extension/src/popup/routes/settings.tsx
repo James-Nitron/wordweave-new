@@ -5,13 +5,18 @@ import { z } from "zod"
 
 import Button from "~/components/button"
 import Card from "~/components/card"
-import { ColorPicker } from "~/components/color-picker"
+import ColorPicker from "~/components/color-picker"
 import Wrapper from "~/components/wrapper"
 import { useUpdateColor } from "~/hooks/use-update-color"
 import { useUser } from "~/hooks/use-user"
 
 const formSchema = z.object({
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color")
+  color: z
+    .string()
+    .regex(
+      /^rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-1](?:\.[0-9]+)?)\s*\)$/,
+      "Invalid RGBA color"
+    )
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -21,7 +26,6 @@ export const Settings = () => {
   const { trigger, isLoading: isUpdating, error } = useUpdateColor()
 
   const {
-    register,
     handleSubmit,
     setValue,
     formState: { errors }
@@ -33,7 +37,6 @@ export const Settings = () => {
   })
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data)
     try {
       await trigger(data.color)
     } catch (err) {
@@ -43,31 +46,27 @@ export const Settings = () => {
 
   return (
     <Wrapper title="Settings" back="/home">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card
-          title="Highlight color"
-          description="Change the color of the word highlight across screens.">
-          <label
-            htmlFor="color-picker"
-            className="text-sm font-medium text-gray-700">
-            Highlight color
-          </label>
+      <Card
+        title="Highlight color"
+        description="Change the color of the word highlight across screens.">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ColorPicker
-            id="color-picker"
-            defaultColor={user?.color ?? "#3B82F6"}
+            id="highlight-color"
+            defaultColor={user?.color ?? "rgb(59, 130, 246)"}
             onChange={(color) => {
               setValue("color", color)
             }}
           />
-        </Card>
-        <Button
-          className="w-full"
-          type="submit"
-          variant="info"
-          disabled={isUpdating}>
-          {isUpdating ? <Loader2 className="animate-spin" /> : "Save"}
-        </Button>
-      </form>
+
+          <Button
+            className="w-full"
+            type="submit"
+            variant="info"
+            disabled={isUpdating}>
+            {isUpdating ? <Loader2 className="animate-spin" /> : "Save"}
+          </Button>
+        </form>
+      </Card>
     </Wrapper>
   )
 }

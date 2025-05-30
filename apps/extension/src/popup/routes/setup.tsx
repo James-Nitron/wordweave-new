@@ -6,7 +6,7 @@ import { z } from "zod"
 
 import Button from "~/components/button"
 import Card from "~/components/card"
-import { ColorPicker } from "~/components/color-picker"
+import ColorPicker from "~/components/color-picker"
 import Dropdown from "~/components/dropdown/dropdown"
 import Seperator from "~/components/seperator"
 import Wrapper from "~/components/wrapper"
@@ -20,10 +20,11 @@ const formSchema = z.object({
     required_error: "Please select a language"
   }),
   color: z
-    .string({
-      required_error: "Color is required"
-    })
-    .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color")
+    .string()
+    .regex(
+      /^rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-1](?:\.[0-9]+)?)\s*\)$/,
+      "Invalid RGBA color"
+    )
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -101,7 +102,7 @@ const Setup = () => {
           </label>
           <ColorPicker
             id="highlight-color"
-            defaultColor="#3B82F6"
+            defaultColor={"rgb(59, 130, 246)"}
             onChange={(color) => {
               setValue("color", color)
             }}
