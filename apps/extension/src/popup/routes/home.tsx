@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
+import Badge from "~/components/badge"
 import Banner from "~/components/banner"
 import Button from "~/components/button"
 import Card from "~/components/card"
 import Seperator from "~/components/seperator"
+import Wrapper from "~/components/wrapper"
 import { useUser } from "~/hooks/use-user"
 import languages, { getLanguageFlag, type LanguageType } from "~/lib/languages"
 
@@ -15,6 +17,8 @@ const Home = () => {
   )
   const dailyWord = user?.dailyWord
 
+  console.log(dailyWord)
+
   console.log("user", user)
 
   useEffect(() => {
@@ -23,7 +27,7 @@ const Home = () => {
     )
   }, [user?.selectedLanguage])
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <Wrapper>
       <Card title="Daily word">
         <div className="flex flex-col gap-2">
           <h3 className="text-sm">
@@ -40,7 +44,12 @@ const Home = () => {
       </Card>
       <Banner
         variant="info"
-        description="Look out for this word whilst you are browsing the web."
+        description={
+          <p>
+            Look out for this word whilst you browse. It will appear as{" "}
+            <Badge color={user?.color}>{dailyWord?.word}</Badge>
+          </p>
+        }
       />
       <Card
         title="History"
@@ -53,11 +62,15 @@ const Home = () => {
           {user?.plan === "FREE" ? "Upgrade to view history" : "View history"}
         </Button>
       </Card>
-      <Card title="Settings">
-        <Link to="/settings">Settings</Link>
+      <Card
+        title="Settings"
+        description="Manage your selected language, highlight color and more.">
+        <Button className="w-full" variant="info" to="/settings">
+          Settings
+        </Button>
       </Card>
       <Link to="/setup">Setup</Link>
-    </div>
+    </Wrapper>
   )
 }
 

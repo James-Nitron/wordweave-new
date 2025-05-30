@@ -8,6 +8,8 @@ import { updateLanguageHandler } from "./routes/users/update-language";
 import { getDailyWord } from "./routes/word/daily-word";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 import { getUser } from "./routes/users/get-user";
+import { updateProfile } from "./routes/users/update-profile";
+import { updateColor } from "./routes/users/update-color";
 
 // Load environment variables from root .env.development
 dotenv.config({
@@ -52,6 +54,8 @@ app.post("/api/webhooks/clerk", clerkWebhookHandler);
 
 app.get("/api/users/:userId", requireAuth(), getUser);
 app.post("/api/users/:userId/language", requireAuth(), updateLanguageHandler);
+app.post("/api/users/:userId/profile", requireAuth(), updateProfile);
+app.post("/api/users/:userId/color", requireAuth(), updateColor);
 app.get("/api/users/:userId/daily-word", requireAuth(), getDailyWord);
 
 // Error handling for unmatched routes

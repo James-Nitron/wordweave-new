@@ -1,20 +1,29 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 import { z } from "zod"
 
 import Button from "~/components/button"
+import Card from "~/components/card"
+import { ColorPicker } from "~/components/color-picker"
 import Dropdown from "~/components/dropdown/dropdown"
-import { useUpdateLanguage } from "~/hooks/use-update-language"
+import Seperator from "~/components/seperator"
+import Wrapper from "~/components/wrapper"
+import { useUpdateProfile } from "~/hooks/use-update-profile"
 import { useUser } from "~/hooks/use-user"
-import languages from "~/lib/languages"
+import languages, { getLanguageFlag } from "~/lib/languages"
 import plans from "~/lib/plan"
 
 const formSchema = z.object({
   language: z.string({
     required_error: "Please select a language"
-  })
+  }),
+  color: z
+    .string({
+      required_error: "Color is required"
+    })
+    .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color")
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -22,67 +31,92 @@ type FormValues = z.infer<typeof formSchema>
 const Setup = () => {
   const navigate = useNavigate()
   const { user, isLoading: isUserLoading } = useUser()
-  const {
-    trigger,
-    isLoading: isUpdating,
-    error
-  } = useUpdateLanguage(user?.id ?? "")
+  const { trigger, isLoading: isUpdating, error } = useUpdateProfile()
 
-  useEffect(() => {
-    if (!isUserLoading && !user?.isNewUser) {
-      navigate("/home")
-    }
-  }, [isUserLoading, user])
+  // useEffect(() => {
+  //   if (!isUserLoading && !user?.isNewUser) {
+  //     navigate("/home")
+  //   }
+  // }, [isUserLoading, user])
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<FormValues>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      color: "#3B82F6"
+    }
   })
 
   const onSubmit = async (data: FormValues) => {
+    console.log(data)
     try {
-      await trigger(data.language)
-      navigate("/home")
+      await trigger({
+        language: data.language,
+        color: data.color
+      })
+      // navigate("/home")
     } catch (err) {
       console.error("Failed to update language:", err)
     }
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <p className="text-sm text-gray-500">
-        Your current plan allows you to choose {plans[user?.plan]?.languages}{" "}
-        language
-      </p>
+    <Wrapper title="Setup">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-md space-y-4">
-        <Dropdown
-          id="language-select"
-          label="Language"
-          {...register("language")}
-          options={languages.map((lang) => ({
-            value: lang.code,
-            label: `${lang.flag} ${lang.name}`
-          }))}
-          placeholder="Choose a language"
-          required
-        />
-        {errors.language && (
-          <p className="text-sm text-red-500">{errors.language.message}</p>
-        )}
-        {error && (
-          <p className="text-sm text-red-500">Failed to update language</p>
-        )}
+        <Card
+          title="Setup your profile."
+          description="Choose a language and highlight color."
+          className="flex flex-col gap-4">
+          <div>
+            <Dropdown
+              id="language-select"
+              label="Language"
+              {...register("language")}
+              options={languages.map((lang) => ({
+                value: lang.code,
+                label: `${getLanguageFlag(lang.flag)} ${lang.name}`
+              }))}
+              placeholder="Choose a language"
+              required
+            />
+            {errors.language && (
+              <p className="text-sm text-red-500">{errors.language.message}</p>
+            )}
+            {error && (
+              <p className="text-sm text-red-500">Failed to update language</p>
+            )}
+          </div>
+          <Seperator />
 
-        <Button type="submit" variant="info" disabled={isUpdating}>
-          {isUpdating ? "Saving..." : "Save Language"}
-        </Button>
+          <label
+            htmlFor="highlight-color"
+            className="text-sm font-medium text-gray-700">
+            Highlight color
+          </label>
+          <ColorPicker
+            id="highlight-color"
+            defaultColor="#3B82F6"
+            onChange={(color) => {
+              setValue("color", color)
+            }}
+          />
+
+          <Button
+            className="w-full"
+            type="submit"
+            variant="info"
+            disabled={isUpdating}>
+            {isUpdating ? <Loader2 className="animate-spin" /> : "Save"}
+          </Button>
+        </Card>
       </form>
-    </div>
+    </Wrapper>
   )
 }
 

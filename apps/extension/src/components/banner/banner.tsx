@@ -5,7 +5,7 @@ const Banner = ({
   description
 }: {
   variant: "info" | "warning"
-  description: string
+  description: string | React.ReactNode
 }) => {
   const variantStyles = {
     info: "bg-blue-50 border-l-blue-500",

@@ -6,6 +6,7 @@ import Button from "~/components/button"
 import Card from "~/components/card"
 import Loader from "~/components/loader"
 import Search from "~/components/search"
+import Wrapper from "~/components/wrapper"
 import { useUser } from "~/hooks/use-user"
 import languages, { getLanguageFlag, type LanguageType } from "~/lib/languages"
 
@@ -34,7 +35,7 @@ const History = () => {
   }, [user?.history, search])
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <Wrapper>
       <div className="flex items-center gap-2">
         <Button
           className="w-fit"
@@ -82,7 +83,7 @@ const History = () => {
           </Card>
         ))}
       </div>
-    </div>
+    </Wrapper>
   )
 }
 
