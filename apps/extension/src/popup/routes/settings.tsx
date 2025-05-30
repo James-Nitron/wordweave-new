@@ -6,6 +6,7 @@ import { z } from "zod"
 import Button from "~/components/button"
 import Card from "~/components/card"
 import ColorPicker from "~/components/color-picker"
+import Switch from "~/components/switch"
 import Wrapper from "~/components/wrapper"
 import { useUpdateColor } from "~/hooks/use-update-color"
 import { useUser } from "~/hooks/use-user"
@@ -46,6 +47,14 @@ export const Settings = () => {
 
   return (
     <Wrapper title="Settings" back="/home">
+      <Card
+        title="Enable/Disable translation."
+        description="Want a break from translations? Disable them here.">
+        <Switch
+          label="Disable translations"
+          checked={user?.disableTranslations}
+        />
+      </Card>
       <Card
         title="Highlight color"
         description="Change the color of the word highlight across screens.">

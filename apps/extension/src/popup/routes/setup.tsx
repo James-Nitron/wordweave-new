@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 import { z } from "zod"
@@ -34,11 +35,11 @@ const Setup = () => {
   const { user, isLoading: isUserLoading } = useUser()
   const { trigger, isLoading: isUpdating, error } = useUpdateProfile()
 
-  // useEffect(() => {
-  //   if (!isUserLoading && !user?.isNewUser) {
-  //     navigate("/home")
-  //   }
-  // }, [isUserLoading, user])
+  useEffect(() => {
+    if (!isUserLoading && !user?.isNewUser) {
+      navigate("/home")
+    }
+  }, [isUserLoading, user])
 
   const {
     register,
@@ -59,7 +60,7 @@ const Setup = () => {
         language: data.language,
         color: data.color
       })
-      // navigate("/home")
+      navigate("/home")
     } catch (err) {
       console.error("Failed to update language:", err)
     }

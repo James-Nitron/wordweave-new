@@ -19,8 +19,8 @@ export function AuthenticationProvider({ children }: PropsWithChildren) {
       routerPush={(to) => navigate(to)}
       routerReplace={(to) => navigate(to, { replace: true })}
       afterSignOutUrl="/sign-in"
-      signInForceRedirectUrl="/home"
-      signUpForceRedirectUrl="/home">
+      signInForceRedirectUrl="/setup"
+      signUpForceRedirectUrl="/setup">
       {children}
     </ClerkProvider>
   )

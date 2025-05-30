@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "@wordweave/database";
+import { getDailyWord } from "../word/daily-word";
 
 export async function updateProfile(req: Request, res: Response) {
   const { userId } = req.params;
@@ -10,21 +11,20 @@ export async function updateProfile(req: Request, res: Response) {
   }
 
   try {
-    const user = await prisma.user.update({
+    // First update the user profile
+    await prisma.user.update({
       where: { id: userId },
       data: {
         languages: [language],
         selectedLanguage: language,
-        isNewUser: false, // Update isNewUser since they've set their language
+        isNewUser: false,
         color: color,
-      },
-      include: {
-        dailyWord: true,
-        history: true,
       },
     });
 
-    res.json(user);
+    // Then get/create daily word using the existing endpoint
+    req.query.language = language;
+    return getDailyWord(req, res);
   } catch (error) {
     console.error("Error updating user profile:", error);
     res.status(500).json({ error: "Failed to update profile" });

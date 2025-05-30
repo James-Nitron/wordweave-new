@@ -41,10 +41,10 @@ const Home = () => {
       <Banner
         variant="info"
         description={
-          <p>
+          <>
             Look out for this word whilst you browse. It will appear as{" "}
             <Badge color={user?.color}>{dailyWord?.word}</Badge>
-          </p>
+          </>
         }
       />
       <Card

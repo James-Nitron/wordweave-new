@@ -15,6 +15,7 @@ model User {
   languages       String[]    @default([])
   selectedLanguage String?
   isNewUser       Boolean     @default(true)
+  translationsEnabled Boolean @default(true)
   dailyWord       DailyWord?
   history         History[]
 }
